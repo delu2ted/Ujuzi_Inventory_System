@@ -4,63 +4,51 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    // 1. List all products
     public function index()
     {
         $products = Product::query()->orderBy('created_at', 'desc')->paginate(10);
         return view('products.index', compact('products'));
     }
 
-    // 2. Show create form
     public function create()
     {
         return view('products.form');
     }
 
+    // ✅ Was missing — needed by route('products.edit')
+    public function edit(Product $product)
+    {
+        return view('products.form', compact('product'));
+    }
+
+    private function redirectToProducts($message = null)
+    {
+        if (app('router')->has('products.index')) {
+            return redirect()->route('products.index')->with('success', $message);
+        }
+
+        return redirect('/products')->with('success', $message);
+    }
+
     private function generateSimpleSKU($category)
-{
-    return 'Code-' . rand(1000, 9999);
-}
+    {
+        // Retry until we get a code that isn't already taken
+        do {
+            $code = 'Code-' . rand(1000, 9999);
+        } while (Product::where('code', $code)->exists());
+
+        return $code;
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'nullable|string|unique:products,code', // ✅ 'nullable' is key here
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'category' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-]);
-
-        // Auto-generate if empty
-        if (empty($validated['code'])) {
-            $validated['code'] = $this->generateSimpleSKU($validated['category']);
-        }
-
-        // Handle Image Upload
-        if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->storeAs('images', $imageName, 'public');
-            $validated['image'] = $imageName;
-        }
-
-        Product::create($validated);
-
-        return redirect()->route('products.index')->with('success', 'Product created with Code: ' . $validated['code']);
-    }
-
-    public function update(Request $request, Product $product)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'sometimes|required|unique:products,code,' . $product->id,
+            'code' => 'nullable|string|unique:products,code',
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:0',
             'category' => 'required|string|max:255',
@@ -68,22 +56,76 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        if (!empty($validated['code'])) {
-            // Keep user input
-        } else {
+        if (empty($validated['code'])) {
+            $validated['code'] = $this->generateSimpleSKU($validated['category']);
         }
 
-        // ... (Rest of update logic) ...
         if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete('images/' . $product->image);
-            }
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->storeAs('images', $imageName, 'public');
-            $validated['image'] = $imageName;
+            $path = $request->file('image')->store('images', 'public');
+            $validated['image'] = $path;
+        }
+
+        Product::create($validated);
+
+        return $this->redirectToProducts('Product created with Code: ' . $validated['code']);
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|unique:products,code,' . $product->id,
+            'price' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
+            'category' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if (empty($validated['code'])) {
+            $validated['code'] = $this->generateSimpleSKU($validated['category']);
         }
 
         $product->update($validated);
-        return redirect()->route('products.index')->with('success', 'Product updated!');
+        return $this->redirectToProducts('Product updated!');
+    }
+
+    // ✅ Was missing — needed by route('products.destroy')
+    public function destroy(Product $product)
+    {
+        if ($product->image) {
+            Storage::disk('public')->delete('images/' . $product->image);
+        }
+        $product->delete();
+
+        return $this->redirectToProducts('Product deleted!');
+    }
+
+    // ✅ Was missing — needed by route('products.stock')
+    public function stockAdjust(Product $product)
+    {
+        return view('products.stock', compact('product'));
+    }
+
+    // ✅ Was missing — needed by route('products.stock-process')
+    public function processStock(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'type' => 'required|in:in,out',
+            'amount' => 'required|integer|min:1',
+        ]);
+
+        if ($validated['type'] === 'in') {
+            $product->quantity += $validated['amount'];
+        } else {
+            if ($validated['amount'] > $product->quantity) {
+                return back()->withErrors(['amount' => 'Cannot remove more than current stock.']);
+            }
+            $product->quantity -= $validated['amount'];
+        }
+
+        $product->save();
+
+        return $this->redirectToProducts('Stock updated!');
     }
 }

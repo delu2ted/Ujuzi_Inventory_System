@@ -1,8 +1,22 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <!-- ... head content ... -->
-    <link rel="stylesheet" href="css/custom.css'">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title', 'Ujuzi Inventory')</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+    <!-- ✅ Fixed: points to your custom.css, no stray quote -->
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 
@@ -11,7 +25,7 @@
 
     <!-- Main Content Wrapper -->
     <div class="main-content">
-        
+
         <!-- Mobile Toggle Button -->
         <button class="mobile-toggle" id="sidebarToggle">
             <i class="bi bi-list"></i>
@@ -23,7 +37,10 @@
         <!-- Flash Messages & Content -->
         <div class="container-fluid px-0">
             @if(session('success'))
-                <!-- ... alerts ... -->
+                <div class="alert alert-success alert-dismissible fade show mx-3" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             @endif
             @yield('content')
         </div>
@@ -31,12 +48,12 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Sidebar Toggle Script -->
     <script>
         const sidebar = document.getElementById('sidebar');
         const toggle = document.getElementById('sidebarToggle');
-        
+
         if (toggle && sidebar) {
             toggle.addEventListener('click', function() {
                 sidebar.classList.toggle('active');

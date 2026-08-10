@@ -11,7 +11,15 @@
                     <h5 class="mb-0"><i class="bi bi-box-seam me-2"></i>Adjust Stock</h5>
                 </div>
                 <div class="card-body text-center">
-                    
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger text-start">
+                            @foreach ($errors->all() as $error)
+                                <div>{{ $error }}</div>
+                            @endforeach
+                        </div>
+                    @endif
+
                     <div class="mb-4">
                         <p class="text-muted mb-1">Current Stock Level</p>
                         <h2 class="display-4 fw-bold {{ $product->quantity > 0 ? 'text-success' : 'text-danger' }}">
@@ -21,18 +29,18 @@
 
                     <form action="{{ route('products.stock-process', $product->id) }}" method="POST">
                         @csrf
-                        
+
                         <div class="mb-3 text-start">
                             <label for="type" class="form-label fw-bold">Action Type</label>
                             <select name="type" id="type" class="form-select" required onchange="updateLabel()">
-                                <option value="in" selected>🟢 Stock IN (Add to Inventory)</option>
-                                <option value="out">🔴 Stock OUT (Remove from Inventory)</option>
+                                <option value="in" {{ old('type', 'in') == 'in' ? 'selected' : '' }}>🟢 Stock IN (Add to Inventory)</option>
+                                <option value="out" {{ old('type') == 'out' ? 'selected' : '' }}>🔴 Stock OUT (Remove from Inventory)</option>
                             </select>
                         </div>
 
                         <div class="mb-4 text-start">
                             <label for="amount" class="form-label fw-bold">Quantity to Adjust</label>
-                            <input type="number" name="amount" id="amount" class="form-control form-control-lg" min="1" required placeholder="Enter quantity">
+                            <input type="number" name="amount" id="amount" class="form-control form-control-lg @error('amount') is-invalid @enderror" min="1" required placeholder="Enter quantity" value="{{ old('amount') }}">
                             <div class="form-text" id="stockHint">Enter the number of units.</div>
                         </div>
 
@@ -50,7 +58,6 @@
 </div>
 
 <script>
-    // Simple script to update hint text based on selection
     function updateLabel() {
         const type = document.getElementById('type').value;
         const hint = document.getElementById('stockHint');
@@ -62,5 +69,6 @@
             hint.classList.remove('text-danger');
         }
     }
+    document.addEventListener('DOMContentLoaded', updateLabel);
 </script>
 @endsection

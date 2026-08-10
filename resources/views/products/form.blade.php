@@ -19,8 +19,8 @@
                         <input type="text" name="name" class="form-control" value="{{ old('name', $product->name ?? '') }}" required>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Product Code (SKU)</label>
-                        <input type="text" name="code" class="form-control" value="{{ old('code', $product->code ?? '') }}" placeholder="Leave empty for auto-generation">
+                        <label class="form-label">Product Code</label>
+                        <input type="text" name="code" class="form-control" value="{{ old('code', $product->code ?? '') }}" {{ isset($product) ? 'readonly' : '' }}>
                         <div class="form-text">Auto-generates if left blank.</div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     <label class="form-label">Product Image</label>
                     @if(isset($product) && $product->image)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/images/' . $product->image) }}" alt="Current" width="100" class="rounded border">
+                            <img src="{{ asset('storage/images/' . $product->image) }}" alt="Current" width="100" height="100" class="rounded border">
                             <div class="form-text">Current Image</div>
                         </div>
                     @endif

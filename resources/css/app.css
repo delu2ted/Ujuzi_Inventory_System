@@ -1,12 +1,10 @@
-/* resources/css/custom.css */
-
 :root {
     --sidebar-width: 260px;
-    --primary-bg: #4e73df;
-    --dark-bg: #224abe;
-    --light-bg: #f8f9fc;
+    --primary-bg: #9b87f5;      
+    --dark-bg: #7c5cd6;         
+    --light-bg: #f8f7fc;
     --text-primary: #5a5c69;
-    --border-color: #e3e6f0;
+    --border-color: #e6e1f5;
     --success-color: #1cc88a;
     --danger-color: #e74a3b;
     --warning-color: #f6c23e;
@@ -21,15 +19,15 @@ body {
     padding: 0;
 }
 
-/* --- Sidebar --- */
 .sidebar {
-    width: 260px; /* Match this with --sidebar-width */
-    min-height: 100vh;
-    background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
-    position: fixed; /* CRITICAL: Must be fixed */
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: linear-gradient(180deg, #a996f8 10%, #6a4fc4 100%);
+    position: fixed;
     top: 0;
     left: 0;
     z-index: 1000;
+    overflow-y: auto;
     box-shadow: 4px 0 10px rgba(0,0,0,0.1);
 }
 
@@ -75,7 +73,7 @@ body {
     font-size: 1.2rem;
 }
 
-/* User Profile in Sidebar */
+
 .sidebar-footer {
     border-top: 1px solid rgba(255,255,255,0.1);
     padding: 15px;
@@ -88,17 +86,15 @@ body {
     align-items: center;
 }
 
-/* --- Main Content --- */
 .main-content {
-    margin-left: 260px; 
+    margin-left: var(--sidebar-width);
     padding: 20px;
     min-height: 100vh;
     transition: margin-left 0.3s;
 }
 
-/* --- Topbar --- */
 .topbar {
-    background-color: white;
+    background-color: #f1ecfd; /* light lavender, was pink */
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     height: 70px;
     display: flex;
@@ -191,21 +187,6 @@ body {
 .badge.bg-danger { background-color: var(--danger-color) !important; }
 .badge.bg-info { background-color: var(--info-color) !important; }
 
-/* --- Mobile Responsive --- */
-@media (max-width: 768px) {
-    .sidebar {
-        margin-left: -260px; /* Hide sidebar by default on mobile */
-    }
-    .sidebar.active {
-        margin-left: 0; /* Show when active */
-    }
-    .main-content {
-        margin-left: 0; /* Content takes full width on mobile */
-    }
-    .mobile-toggle {
-        display: block; /* Show toggle on mobile */
-    }
-}
 
 .mobile-toggle {
     display: none; /* Hidden on desktop */

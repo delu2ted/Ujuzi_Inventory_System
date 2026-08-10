@@ -1,13 +1,6 @@
-
- @extends('layouts.app')
-@section('title', 'Login')
-@section('page-title', 'Login to Ujuzi Shop Mall')
-
-@section('content')
-
 <x-guest-layout>
-<div class="row justify-content-center">
-    <div class="col-md-6">
+<div class="row justify-content-center g-0">
+    <div class="col-12">
         <div class="card shadow">
             <div class="card-header text-center">
                 <h4>Login</h4>
@@ -39,13 +32,16 @@
                             </a>
                         </div>
                     @endif
+                    @if (Route::has('register'))
+                        <div class="text-center mt-2">
+                            <a class="btn btn-link text-decoration-none" href="{{ route('register') }}">
+                                Need an account? Register
+                            </a>
+                        </div>
+                    @endif
                 </form>
             </div>
         </div>
     </div>
 </div>
-
 </x-guest-layout>
-
-@endsection
-
