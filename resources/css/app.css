@@ -23,10 +23,10 @@ body {
 
 /* --- Sidebar --- */
 .sidebar {
-    width: var(--sidebar-width);
+    width: 260px; /* Match this with --sidebar-width */
     min-height: 100vh;
-    background: linear-gradient(180deg, var(--primary-bg) 10%, var(--dark-bg) 100%);
-    position: fixed;
+    background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+    position: fixed; /* CRITICAL: Must be fixed */
     top: 0;
     left: 0;
     z-index: 1000;
@@ -90,7 +90,7 @@ body {
 
 /* --- Main Content --- */
 .main-content {
-    margin-left: var(--sidebar-width);
+    margin-left: 260px; 
     padding: 20px;
     min-height: 100vh;
     transition: margin-left 0.3s;
@@ -194,31 +194,32 @@ body {
 /* --- Mobile Responsive --- */
 @media (max-width: 768px) {
     .sidebar {
-        margin-left: calc(-1 * var(--sidebar-width));
+        margin-left: -260px; /* Hide sidebar by default on mobile */
     }
     .sidebar.active {
-        margin-left: 0;
+        margin-left: 0; /* Show when active */
     }
     .main-content {
-        margin-left: 0;
+        margin-left: 0; /* Content takes full width on mobile */
     }
     .mobile-toggle {
-        display: block !important;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1001;
-        background: var(--primary-bg);
-        color: white;
-        border: none;
-        padding: 10px;
-        border-radius: 5px;
+        display: block; /* Show toggle on mobile */
     }
 }
 
 .mobile-toggle {
-    display: none;
+    display: none; /* Hidden on desktop */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    background: #4e73df;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
 }
+
 
 /* Utility */
 .text-muted { color: var(--text-primary) !important; }
