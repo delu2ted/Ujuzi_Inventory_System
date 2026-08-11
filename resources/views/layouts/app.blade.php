@@ -15,8 +15,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    <!-- ✅ Fixed: points to your custom.css, no stray quote -->
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 </head>
 <body>
 
@@ -26,10 +25,6 @@
     <!-- Main Content Wrapper -->
     <div class="main-content">
 
-        <!-- Mobile Toggle Button -->
-        <button class="mobile-toggle" id="sidebarToggle">
-            <i class="bi bi-list"></i>
-        </button>
 
         <!-- Topbar Component -->
         @include('layouts.topbar', ['pageTitle' => $pageTitle ?? 'Dashboard'])

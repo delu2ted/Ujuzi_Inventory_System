@@ -33,10 +33,11 @@
                 <li><a class="dropdown-item" href="{{ route('profile.edit') }}">My Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item">Logout</button>
-                    </form>
+                    <form method="POST" action="{{ route('logout') }}"> 
+                        @csrf 
+                        <button type="submit" class="nav-link w-100 text-start border-0 bg-transparent"> 
+                            <i class="bi bi-box-arrow-right"></i> Logout </button> 
+                        </form> 
                 </li>
             </ul>
         </div>

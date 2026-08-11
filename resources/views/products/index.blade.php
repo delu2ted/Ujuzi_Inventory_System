@@ -34,7 +34,7 @@
                         <tr>
                             <td class="text-center">
                                 @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" width="50" height="55" class="img-thumbnail">
+                                <img src="{{ asset('storage/images/' . $product->image) }}" alt="{{ $product->name }}" width="50" height="55" class="img-thumbnail">
                                 @else
                                     <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
                                 @endif
