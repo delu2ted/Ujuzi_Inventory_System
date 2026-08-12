@@ -212,3 +212,40 @@ body {
 .gap-2 { gap: 0.5rem; }
 .text-center { text-align: center; }
 .w-100 { width: 100%; } 
+
+
+.table tbody tr:hover {
+    background-color: #f4f1fd;
+    transition: background-color 0.15s ease;
+}
+.table tbody tr:nth-child(even) {
+    background-color: #fbfafd;
+}
+
+.btn-sm-icon {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: white;
+    transition: all 0.15s ease;
+}
+.btn-sm-icon.edit:hover { background: var(--info-color); border-color: var(--info-color); color: white; }
+.btn-sm-icon.delete:hover { background: var(--danger-color); border-color: var(--danger-color); color: white; }
+.btn-sm-icon.stock:hover { background: var(--warning-color); border-color: var(--warning-color); color: white; }
+
+.badge {
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sidebar-nav .nav-link.active {
+    background: rgba(255,255,255,0.18);
+    font-weight: 600;
+}
