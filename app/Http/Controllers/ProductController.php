@@ -34,9 +34,9 @@ class ProductController extends Controller
         return redirect('/products')->with('success', $message);
     }
 
-    private function generateSimpleSKU($category)
+    private function generateSimpleCode($category)
     {
-        // Retry until we get a code that isn't already taken
+        
         do {
             $code = 'Code-' . rand(1000, 9999);
         } while (Product::where('code', $code)->exists());
@@ -57,7 +57,7 @@ class ProductController extends Controller
         ]);
 
         if (empty($validated['code'])) {
-            $validated['code'] = $this->generateSimpleSKU($validated['category']);
+            $validated['code'] = $this->generateSimpleCode($validated['category']);
         }
 
         if ($request->hasFile('image')) {
@@ -71,43 +71,54 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, Product $product)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'nullable|string|unique:products,code,' . $product->id,
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
-            'category' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'code' => 'nullable|string|unique:products,code,' . $product->id,
+        'price' => 'required|numeric|min:0',
+        'quantity' => 'required|integer|min:0',
+        'category' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        if (empty($validated['code'])) {
-            $validated['code'] = $this->generateSimpleSKU($validated['category']);
-        }
-
-        $product->update($validated);
-        return $this->redirectToProducts('Product updated!');
+    if (empty($validated['code'])) {
+        $validated['code'] = $this->generateSimpleCode($validated['category']);
     }
 
-    // ✅ Was missing — needed by route('products.destroy')
-    public function destroy(Product $product)
-    {
+    if ($request->hasFile('image')) {
+
         if ($product->image) {
-            Storage::disk('public')->delete('images/' . $product->image);
+            Storage::disk('public')->delete($product->image);
         }
-        $product->delete();
-
-        return $this->redirectToProducts('Product deleted!');
+        $validated['image'] = $request->file('image')->store('images', 'public');
+    } else {
+        
+        unset($validated['image']);
     }
 
-    // ✅ Was missing — needed by route('products.stock')
+    $product->update($validated);
+    return $this->redirectToProducts('Product updated!');
+}
+
+    
+    public function destroy(Product $product)
+{
+    if ($product->image) {
+        Storage::disk('public')->delete($product->image);  
+    }
+    $product->delete();
+
+    return $this->redirectToProducts('Product deleted!');
+}
+
+
     public function stockAdjust(Product $product)
     {
         return view('products.stock', compact('product'));
     }
 
-    // ✅ Was missing — needed by route('products.stock-process')
+    
     public function processStock(Request $request, Product $product)
     {
         $validated = $request->validate([
