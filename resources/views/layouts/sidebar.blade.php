@@ -1,4 +1,5 @@
 <div class="sidebar">
+    
     <a href="{{ route('dashboard') }}" class="sidebar-brand">
         Ujuzi Inventory
     </a>
